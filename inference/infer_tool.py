@@ -186,17 +186,17 @@ class Svc(object):
         audio = []
         for (slice_tag, data) in audio_data:
             print(f'#=====segment start, {round(len(data) / audio_sr, 3)}s======')
-            # padd
+            # pad
             pad_len = int(audio_sr * pad_seconds)
             data = np.concatenate([np.zeros([pad_len]), data, np.zeros([pad_len])])
             length = int(np.ceil(len(data) / audio_sr * self.target_sample))
-            raw_path = io.BytesIO()
-            soundfile.write(raw_path, data, audio_sr, format="wav")
-            raw_path.seek(0)
             if slice_tag:
                 print('jump empty segment')
                 _audio = np.zeros(length)
             else:
+                raw_path = io.BytesIO()
+                soundfile.write(raw_path, data, audio_sr, format="wav")
+                raw_path.seek(0)
                 out_audio, out_sr = self.infer(spk, tran, raw_path,
                                                     cluster_infer_ratio=cluster_infer_ratio,
                                                     auto_predict_f0=auto_predict_f0,

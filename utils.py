@@ -80,7 +80,7 @@ def plot_data_to_numpy(x, y):
     plt.tight_layout()
 
     fig.canvas.draw()
-    data = np.fromstring(fig.canvas.tostring_rgb(), dtype=np.uint8, sep='')
+    data = np.frombuffer(fig.canvas.tostring_rgb(), dtype=np.uint8)
     data = data.reshape(fig.canvas.get_width_height()[::-1] + (3,))
     plt.close()
     return data
@@ -174,7 +174,7 @@ def f0_to_coarse(f0):
 
   f0_mel[f0_mel <= 1] = 1
   f0_mel[f0_mel > f0_bin - 1] = f0_bin - 1
-  f0_coarse = (f0_mel + 0.5).long() if is_torch else np.rint(f0_mel).astype(np.int)
+  f0_coarse = (f0_mel + 0.5).long() if is_torch else np.rint(f0_mel).astype(int)
   assert f0_coarse.max() <= 255 and f0_coarse.min() >= 1, (f0_coarse.max(), f0_coarse.min())
   return f0_coarse
 
@@ -272,7 +272,7 @@ def clean_checkpoints(path_to_models='logs/44k/', n_ckpts_to_keep=2, sort_by_tim
                         False -> lexicographically delete ckpts
   """
   ckpts_files = [f for f in os.listdir(path_to_models) if os.path.isfile(os.path.join(path_to_models, f))]
-  name_key = (lambda _f: int(re.compile('._(\d+)\.pth').match(_f).group(1)))
+  name_key = (lambda _f: int(re.compile(r'._(\d+)\.pth').match(_f).group(1)))
   time_key = (lambda _f: os.path.getmtime(os.path.join(path_to_models, _f)))
   sort_key = time_key if sort_by_time else name_key
   x_sorted = lambda _x: sorted([f for f in ckpts_files if f.startswith(_x) and not f.endswith('_0.pth')], key=sort_key)
@@ -321,7 +321,7 @@ def plot_spectrogram_to_numpy(spectrogram):
   plt.tight_layout()
 
   fig.canvas.draw()
-  data = np.fromstring(fig.canvas.tostring_rgb(), dtype=np.uint8, sep='')
+  data = np.frombuffer(fig.canvas.tostring_rgb(), dtype=np.uint8)
   data = data.reshape(fig.canvas.get_width_height()[::-1] + (3,))
   plt.close()
   return data
@@ -350,7 +350,7 @@ def plot_alignment_to_numpy(alignment, info=None):
   plt.tight_layout()
 
   fig.canvas.draw()
-  data = np.fromstring(fig.canvas.tostring_rgb(), dtype=np.uint8, sep='')
+  data = np.frombuffer(fig.canvas.tostring_rgb(), dtype=np.uint8)
   data = data.reshape(fig.canvas.get_width_height()[::-1] + (3,))
   plt.close()
   return data
