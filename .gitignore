@@ -1,0 +1,48 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+*.egg
+*.egg-info/
+dist/
+build/
+.eggs/
+*.pyo
+
+# Virtual environments
+.venv/
+venv/
+env/
+.env
+
+# Jupyter Notebooks checkpoints
+.ipynb_checkpoints/
+
+# Model weights and checkpoints (large binary files)
+logs/44k/*.pth
+logs/44k/kmeans_*.pt
+*.pth
+*.pt
+*.onnx
+
+# Dataset files
+dataset/
+dataset_raw/
+raw/
+results/
+
+# Hubert model
+hubert/checkpoint_best_legacy_500.pt
+
+# Temp inference files
+temp.wav
+inference/chunks_temp.json
+
+# OS / IDE
+.DS_Store
+.idea/
+.vscode/
+*.swp
+*.swo

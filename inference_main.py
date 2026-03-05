@@ -22,25 +22,25 @@ def main():
 
     parser = argparse.ArgumentParser(description='sovits4 inference')
 
-    # 一定要设置的部分
-    parser.add_argument('-m', '--model_path', type=str, default="logs/G_23000.pth", help='模型路径')
-    parser.add_argument('-c', '--config_path', type=str, default="configs/config.json", help='配置文件路径')
-    parser.add_argument('-n', '--clean_names', type=str, nargs='+', default=["君の知らない物語-src.wav"], help='wav文件名列表，放在raw文件夹下')
-    parser.add_argument('-t', '--trans', type=int, nargs='+', default=[0], help='音高调整，支持正负（半音）')
-    parser.add_argument('-s', '--spk_list', type=str, nargs='+', default=['yunhao'], help='合成目标说话人名称')
+    # Required arguments
+    parser.add_argument('-m', '--model_path', type=str, default="logs/G_23000.pth", help='Path to the model')
+    parser.add_argument('-c', '--config_path', type=str, default="configs/config.json", help='Path to the config file')
+    parser.add_argument('-n', '--clean_names', type=str, nargs='+', default=["君の知らない物語-src.wav"], help='List of wav file names located in the raw folder')
+    parser.add_argument('-t', '--trans', type=int, nargs='+', default=[0], help='Pitch adjustment in semitones (positive or negative)')
+    parser.add_argument('-s', '--spk_list', type=str, nargs='+', default=['yunhao'], help='Target speaker name(s) for synthesis')
 
-    # 可选项部分
+    # Optional arguments
     parser.add_argument('-a', '--auto_predict_f0', action='store_true', default=False,
-                        help='语音转换自动预测音高，转换歌声时不要打开这个会严重跑调')
-    parser.add_argument('-cm', '--cluster_model_path', type=str, default="logs/44k/kmeans_10000.pt", help='聚类模型路径，如果没有训练聚类则随便填')
-    parser.add_argument('-cr', '--cluster_infer_ratio', type=float, default=0, help='聚类方案占比，范围0-1，若没有训练聚类模型则填0即可')
+                        help='Automatic pitch prediction for voice conversion. Do NOT enable when converting singing as it causes severe pitch issues.')
+    parser.add_argument('-cm', '--cluster_model_path', type=str, default="logs/44k/kmeans_10000.pt", help='Path to the clustering model; fill in any value if clustering is not trained')
+    parser.add_argument('-cr', '--cluster_infer_ratio', type=float, default=0, help='Proportion of the clustering solution, range 0-1; fill in 0 if no clustering model is trained')
 
-    # 不用动的部分
-    parser.add_argument('-sd', '--slice_db', type=int, default=-40, help='默认-40，嘈杂的音频可以-30，干声保留呼吸可以-50')
-    parser.add_argument('-d', '--device', type=str, default=None, help='推理设备，None则为自动选择cpu和gpu')
-    parser.add_argument('-ns', '--noice_scale', type=float, default=0.4, help='噪音级别，会影响咬字和音质，较为玄学')
-    parser.add_argument('-p', '--pad_seconds', type=float, default=0.5, help='推理音频pad秒数，由于未知原因开头结尾会有异响，pad一小段静音段后就不会出现')
-    parser.add_argument('-wf', '--wav_format', type=str, default='flac', help='音频输出格式')
+    # Rarely changed arguments
+    parser.add_argument('-sd', '--slice_db', type=int, default=-40, help='Silence threshold in dB; default -40, use -30 for noisy audio, -50 to preserve breaths')
+    parser.add_argument('-d', '--device', type=str, default=None, help='Inference device; None = auto-select CPU or GPU')
+    parser.add_argument('-ns', '--noice_scale', type=float, default=0.4, help='Noise scale; affects pronunciation clarity and audio quality')
+    parser.add_argument('-p', '--pad_seconds', type=float, default=0.5, help='Seconds of silence padding added to each audio segment to avoid artifacts at start/end')
+    parser.add_argument('-wf', '--wav_format', type=str, default='flac', help='Output audio format')
 
     args = parser.parse_args()
 
